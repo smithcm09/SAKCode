@@ -1,6 +1,7 @@
 %Plotting the Amplitude Metrics
+% have AMPLITUDES.mat loaded
 
-%% Raw Amplitude Plots vs Time
+%% Amplitude Plots vs Time
 
 Date = datenum(Date_Time);
 figure
@@ -126,4 +127,36 @@ loglog(SAKB_BD1, SAKB_HHZ, 'ko')
 title('SAKB BD1 vs SAKB HHZ')
 
 %% 
+Date = datenum(Date_Time);
 
+figure
+subplot(2,1,1)
+semilogy(Date, SAKA_BD1, 'r.')
+hold on
+semilogy(Date, SAKA_BD2, 'r.')
+semilogy(Date, SAKA_BD3, 'r.')
+semilogy(Date, SAKB_BD1, 'c.')
+semilogy(Date, SAKB_BD2, 'c.')
+semilogy(Date, SAKB_BD3, 'c.')
+title('Sakurajima Infrasound (Pa)')
+datetick('x')
+legend('A-BD1','A-BD2','A-BD3','B-BD1','B-BD2','B-BD3','Location','northwest','Orientation','horizontal')
+% scatter(LTG,Points, 'k.')
+hold off
+
+subplot(2,1,2)
+% semilogy(Date, SAKA_HHE, 'r.')
+% hold on
+% semilogy(Date, SAKA_HHN, 'r.')
+semilogy(Date, SAKA_HHZ, 'r.')
+hold on
+% semilogy(Date, SAKB_HHE, 'c.')
+% semilogy(Date, SAKB_HHN, 'c.')
+semilogy(Date, SAKB_HHZ, 'c.')
+title('Sakurajima Seismic (nm/s)')
+datetick('x');
+%legend('A-HHE','A-HHN','A-HHZ','B-HHE','B-HHN','B-HHZ','Location','southwest','Orientation','horizontal')
+%legend('HHE','HHN','HHZ','Location','southwest','Orientation','horizontal')
+legend('A-HHZ','B-HHZ','Location','southwest','Orientation','horizontal')
+% scatter(LTG,(Points*10000), 'k.')
+hold off

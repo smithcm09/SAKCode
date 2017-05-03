@@ -13,16 +13,24 @@ w4 = waveform(ds, ctag4, snum, enum);
 
 %% 
 % plot(w)
-% rsamobj1 = waveform2rsam(w)
-%equivalent to next line
-% rsamobj2 = waveform2rsam(w, 'mean', 60.0)
-% rsamobj3 = waveform2rsam(w, 'max', 10.0)
+
+%% mean 60s (regular rsam values - can also do (w, 'mean', 60) to be specific
+rsamobj1 = waveform2rsam(w1)
+rsamobj2 = waveform2rsam(w2)
+rsamobj3 = waveform2rsam(w3)
+rsamobj4 = waveform2rsam(w4)
+
+%% max - 10s
+% rsamobj1 = waveform2rsam(w1, 'max', 10.0)
+% rsamobj2 = waveform2rsam(w2, 'max', 10.0)
+% rsamobj3 = waveform2rsam(w3, 'max', 10.0)
+% rsamobj4 = waveform2rsam(w4, 'max', 10.0)
 
 %% looking for tremor only
-rsamobj1 = waveform2rsam(w1, 'median', 600.0)
-rsamobj2 = waveform2rsam(w2, 'median', 600.0)
-rsamobj3 = waveform2rsam(w3, 'median', 600.0)
-rsamobj4 = waveform2rsam(w4, 'median', 600.0)
+% rsamobj1 = waveform2rsam(w1, 'median', 600.0)
+% rsamobj2 = waveform2rsam(w2, 'median', 600.0)
+% rsamobj3 = waveform2rsam(w3, 'median', 600.0)
+% rsamobj4 = waveform2rsam(w4, 'median', 600.0)
 
 %% plot all on one plot - wiki way
 rsamvectorA = [rsamobj1 rsamobj3] %infra
@@ -37,6 +45,9 @@ xlabel('2015')
 ylabel('Pa')
 title('Infrasound')
 
+% scatter(LTG,Points, 'yx')
+datetick('x')
+
 subplot(2,1,2)
 rsamplot(rsamvectorB)
 legend('1:A-HHZ','2:B-HHZ')
@@ -44,12 +55,14 @@ xlabel('2015')
 ylabel('nm/s')
 title('Seismic')
 
-suptitle('Sakurajima RSAM: median - 600s')
+suptitle('Sakurajima RSAM: mean - 60s')
+% suptitle('Sakurajima RSAM: max - 10s')
+% suptitle('Sakurajima RSAM: median - 600s')
 
 hold off
 
 %% 
 
-%plot panels
-rsamvector = [rsamobj1 rsamobj2 rsamobj3 rsamobj4]
-rsamvector.plot_panels();
+% %plot panels
+% rsamvector = [rsamobj1 rsamobj2 rsamobj3 rsamobj4]
+% rsamvector.plot_panels();
