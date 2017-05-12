@@ -4,16 +4,15 @@
 % load('catalogobj.mat')
 
 %pull the waveform from the catalog object (long waveform)
-% w = catalogobj.waveforms{1,1}(10,1)
-% w = catalogobj.waveforms{1,2}(1,1)
 
-fileID = fopen('Durations.txt', 'a');
-fprintf(fileID, 'Event\tWaveform\tDuration');
-formatSpec = '\n %d\t%d\t%f';
-formatSpec2 = '\n %d\t%d\t%s';
+
+% fileID = fopen('Durations_off.txt', 'a');
+% fprintf(fileID, 'Event\tWaveform\tDuration');
+% formatSpec = '\n %d\t%d\t%f';
+% formatSpec2 = '\n %d\t%d\t%s';
 
 %Make a nexted loop for the waveforms
-for i =1:4%numel(catalogobj.waveforms);
+for i =1:numel(catalogobj.waveforms);
     for j = 1:numel(catalogobj.waveforms{1,i});
            
                 
@@ -58,58 +57,56 @@ for i =1:4%numel(catalogobj.waveforms);
         
         %save figure as .fig and .jpeg
 %         saveas(gcf,sprintf('%d_%d', i, j))
-%         saveas(gcf,sprintf('%d_%d', i, j), 'jpeg')
+        saveas(gcf,sprintf('%d_%d', i, j), 'jpeg')
         close
 
-        %print data to file
-        %open file
-%          fileID = fopen('Durations.txt', 'a');
 
-        %check to see if arrival exists for this time
-        %%%% There is a problem in the logic of this line - check on monday
-        for k = 1:numel(catalogobj.arrivals{1,i}.time())
-         if get(catalogobj.waveforms{1,i}(j,1),'ChannelTag') == get(catalogobj.arrivals{1,i}.waveforms(k,1), 'ChannelTag')
-             break
-         end
-        end
-        
-        if get(catalogobj.waveforms{1,i}(j,1),'ChannelTag') ~= get(catalogobj.arrivals{1,i}.waveforms(k,1), 'ChannelTag')
-            fprintf(fileID, formatSpec2, i, j, 'no_picked_arrival');
-            continue
-        end
-
-         
-         %if no sta/lta durations picked during timeframe
-        if numel(cobj.duration) == 0;
-          fprintf(fileID, formatSpec2, i, j, 'no_sta/lta_durations_picked');
-        end
-
-        
-        %if only one duration picked during timeframe
-        if numel(cobj.duration) == 1;
-           format long g;
-           [~,idx]=ismembertol((get(catalogobj.arrivals{1,i}.waveforms(k,1),'start')), cobj.ontime(), 0.00005787, 'DataScale', 1);
-                if idx == 0; %no matches with arrival pick within 5 seconds
-                    fprintf(fileID, formatSpec2, i, j, '1_arr_no_match_in5secwindow');
-                else
-                    ArrPickEv = cobj.duration(idx);
-                    fprintf(fileID, formatSpec, i, j, ArrPickEv);
-                end
-         end
-            
-            
-        %if more than one duration picked in the timeframe... 
-        %first event after within a +- 5 second window from arrival pick
-        if numel(cobj.duration) > 1;
-           format long g;
-           [~,idx]=ismembertol((get(catalogobj.arrivals{1,i}.waveforms(k,1),'start')), cobj.ontime(), 0.00005787, 'DataScale', 1);
-                if idx == 0 %no matches with arrival pick within 5 seconds
-                    fprintf(fileID, formatSpec2, i, j, 'multiple_arr_no_match_in5secwindow');
-                else
-                    ArrPickEv = cobj.duration(idx);
-                    fprintf(fileID, formatSpec, i, j, ArrPickEv);
-                end
-        end
+%         %check to see if arrival exists for this time
+% 
+%         for k = 1:numel(catalogobj.arrivals{1,i}.time())
+%          if get(catalogobj.waveforms{1,i}(j,1),'ChannelTag') == get(catalogobj.arrivals{1,i}.waveforms(k,1), 'ChannelTag')
+%              break
+%          end
+%         end
+%         
+%         
+%         if get(catalogobj.waveforms{1,i}(j,1),'ChannelTag') ~= get(catalogobj.arrivals{1,i}.waveforms(k,1), 'ChannelTag')
+%             fprintf(fileID, formatSpec2, i, j, 'NPA');
+%             continue
+%         end
+% 
+%          
+%          %if no sta/lta durations picked during timeframe
+%         if numel(cobj.duration) == 0;
+%           fprintf(fileID, formatSpec2, i, j, 'NSLDP');
+%         end
+% 
+%         
+%         %if only one duration picked during timeframe
+%         if numel(cobj.duration) == 1;
+%            format long g;
+%            [~,idx]=ismembertol((get(catalogobj.arrivals{1,i}.waveforms(k,1),'start')), cobj.ontime(), 0.00005787, 'DataScale', 1);
+%                 if idx == 0; %no matches with arrival pick within 5 seconds
+%                     fprintf(fileID, formatSpec2, i, j, 'OANMF');
+%                 else
+%                     ArrPickEv = cobj.offtime(idx);
+%                     fprintf(fileID, formatSpec, i, j, ArrPickEv);
+%                 end
+%          end
+%             
+%             
+%         %if more than one duration picked in the timeframe... 
+%         %first event after within a +- 5 second window from arrival pick
+%         if numel(cobj.duration) > 1;
+%            format long g;
+%            [~,idx]=ismembertol((get(catalogobj.arrivals{1,i}.waveforms(k,1),'start')), cobj.ontime(), 0.00005787, 'DataScale', 1);
+%                 if idx == 0 %no matches with arrival pick within 5 seconds
+%                     fprintf(fileID, formatSpec2, i, j, 'MANMF');
+%                 else
+%                     ArrPickEv = cobj.offtime(idx);
+%                     fprintf(fileID, formatSpec, i, j, ArrPickEv);
+%                 end
+%         end
 %          
     end
 end

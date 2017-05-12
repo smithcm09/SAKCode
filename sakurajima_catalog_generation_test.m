@@ -1,5 +1,4 @@
-%test code to fix wonky arrival picking
-
+%develop a catalog and load waveforms for a given arrival table
 %% 1. Define datasources, channels etc
 %     dbpath = '/raid/data/sakurajima/db'; % symlink to Dropbox db, requires /raid/data to be mounted
     dbpath = '/home/c/cmsmith10/SAK';
