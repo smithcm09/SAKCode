@@ -1,16 +1,16 @@
 %% VASR calculation and plots
 
-%Calculating the VASR using the extracted and averaged Total Energy (J)
+%Calculating the VASR using the extracted and median Total Energy (J)
 % values from ExtractedEnergy.mat
 
-%Calculate VASR for SAKA (avg infra and vert seis)
-VASR_A = AverageAInfra./AHZ_TotalEnergyJ;
+%Calculate VASR for SAKA (median infra and vert seis)
+VASR_A = MedianAInfra./AHZ_TotalEnergyJ;
 
-%Calculate VASR for SAKB (avg infra and vert seis)
-VASR_B = AverageBInfra./BHZ_TotalEnergyJ;
+%Calculate VASR for SAKB (median infra and vert seis)
+VASR_B = MedianBInfra./BHZ_TotalEnergyJ;
 
-%Calculate Overall VASR for AB (all avg infra and avg vert seis)
-VASR_AB = OverallABavgInfra./VerticalABavgSeis;
+%Calculate Overall VASR for AB (all median infra and median vert seis)
+VASR_AB = OverallABmedInfra./VerticalABmedSeis;
 
 %Calculate the maximum VASR for each event from the set A, B, and AB
 for i = 1:numel(EnergyEvent);
