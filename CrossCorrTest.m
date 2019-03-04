@@ -1,49 +1,61 @@
+%CrossCorr Testing
+%shortCatalog{1,x} = catalogobj.waveforms{1,x}
+%shortCatalog{2,x} = catalogobj.arrivals{1,x}
 
-%Waveform Correlation from the Correlation cookbook 
-% http://www.giseis.alaska.edu/Seis/EQ/tools/GISMO/correlation_cookbook/correlation_cookbook.html
+%i = event number you are looking at
+%eg i = 841
 
-%Load arrival data from the resulting structures from Antelope_gismo_week2
+%or for a group
+WFS = []
+Trig = []
+for i = 1:length(indexVar)
+    x = indexVar(i);
+    %change structure to arrays
+    yy = shortCatalog{2,x};
+    T = yy.time;
+    Ch = yy.channelinfo;
 
-dbpath = '/home/c/cmsmith10/SAK/SAK';
-ds = datasource('antelope',dbpath);
-%% 
+    %subset arrays based on the station/channel string desired
+%****change this line if changing correlated pair****
+    trig = T(strcmp('.SAKA..BD1',Ch),:); 
+    
+        for j = 1:length(shortCatalog{1,x})
+            xx = shortCatalog{1,x}(j,1);
+            y = get(xx,'station');
+            z = get(xx,'channel');
+%****change this line if changing correlated pair****
+            if strmatch(y,'SAKA') & strmatch(z,'BD1')
+            Wfs = shortCatalog{1,x}(j,1);
+            Trigger = trig; 
+            
+            WFS = [WFS;Wfs];
+            Trig = [Trig;Trigger];
+            else
+                sprintf 'N';
+            end
 
-%change structure to arrays
-T = arrivalobj.time;
-Ch = arrivalobj.channelinfo;
+        end
+   
+end
+%%
+c = correlation(WFS,Trig);
 
-%subset arrays based on the station/channel string desired
-time = T(strcmp('.SAKB..HHN',Ch),:);
-%% 
-
-%change scnl to the specific station and channel that you wish to run the
-%correlation on
-%scnl = scnlobject('sta','chan');
-scnl = scnlobject('SAKB','HHZ');
-
-%***CHANGE THIS VALUE***
-c = correlation(ds,scnl,time,-5,60);
-
-%c = correlation(ds,scnl,timenum,-1,60);
-%reminder of what can be done with a correlationobject
-% methods(c)
-% display(c)
-
+%%
 %% Plot original data
 % Use 'wig' option for a traditional wiggle plot. 'sha' displays shaded traces often useful when viewing more than ~50 traces at a time. 
 %can use 'sha' for a shaded instead of wiggle plot
 
-%plot(c,'wig');
-plot(c,'sha');
+plot(c,'wig');
+%plot(c,'sha');
 
 %% crop filter and taper waveforms
 % This particular use of crop is unnecessary but it demonstrates cropping the data (in this case on the low end) and zero padding (in this case on the high end.) BUTTER applies a zero-phase Butterworth filter to the data. It is important to at least apply a high pass filter to data before cross-correlating as long period rolls can greatly bias the correlation.
-% c = crop(c,-4,12);
+c = crop(c,-3,12);
 c = taper(c);
 
 %***CHANGE THIS VALUE***
-c = butter(c,[1 2]);
-
+c = butter(c,[1 20]);
+plot(c,'wig')
 %% Perform the cross correlation
 %Cross correlate waveforms, identifying the maximum correlation value and the relative time offset between each pair of traces to acheive the maximum correlation. For many hundreds of events, this can be a time consuming process. XCORR provides status information along the way. 
 %c = xcorr(c,[0 3.5]);
@@ -66,7 +78,7 @@ lag_matrix(1:5,1:5)
 %% Realign traces
 %Apply the time corrections in the lag matrix to the trigger times. This will result in highly correlated traces being well aligned. Plot the results as a shaded waveform plot. 
 c = adjusttrig(c,'MIN',1);
-plot(c,'sha');
+plot(c,'wig');
 
 %% Create the hierarchial cluster tree
 %Plot a hierarchical cluster tree relationship (denrogram) between traces. Plot reorders traces such that they correspond with the ordering of traces on the cluster tree. 
@@ -81,7 +93,7 @@ close(gcf)
 % cluster
 
 %***CHANGE THIS VALUE***
-c = cluster(c,.8);
+c = cluster(c,.7);
 
 %fig6
 index = find(c,'CLUST',1);
@@ -120,7 +132,7 @@ c1 = crop(c1,-4,15);
 c1 = norm(c1);
 c1 = stack(c1);
 c1 = norm(c1);
-
+plot(c1,'wig')
 %% Find Residual Waveform
 %Subtract the stacked waveform from all other traces. The final trace is zeroed out because it was subtracted from itself (the stack). 
 c2 = norm(c1);
@@ -149,8 +161,3 @@ plot(c,'occurence',1,1:10);
 %Plot all traces from the largest cluster together with the stack of the traces.
 index = find(c,'CLUST',1);
 plot(c,'overlay',1,index);
-
-%% 
-% close all
-
-
